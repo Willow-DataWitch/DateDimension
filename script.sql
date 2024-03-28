@@ -59,7 +59,7 @@ CREATE TABLE [datedim].[datedim] (
     ,[CalendarYearAndMonthNumber] AS CAST( CAST(YEAR([Date_DT]) AS VARCHAR(10) ) + RIGHT('00' + CAST(MONTH([Date_DT]) AS VARCHAR(10) ) , 2) AS INT)
 
     /*These are relative. They get recalculated when you update the [AsOfDate_DT] column.*/
-    ,[PastAndFuture] AS CASE WHEN [Date_DT] > [AsOfDate_DT] THEN 'The Past' WHEN [Date_DT] < [AsOfDate_DT] THEN 'The Future' WHEN [Date_DT] = [AsOfDate_DT] THEN 'As-Of Date' ELSE 'Unknown' END PERSISTED
+    ,[PastAndFuture] AS CASE WHEN [Date_DT] < [AsOfDate_DT] THEN 'The Past' WHEN [Date_DT] > [AsOfDate_DT] THEN 'The Future' WHEN [Date_DT] = [AsOfDate_DT] THEN 'As-Of Date' ELSE 'Unknown' END PERSISTED
     ,[ThisMonth] AS CASE WHEN YEAR([Date_DT]) = YEAR([AsOfDate_DT]) AND MONTH([Date_DT]) = MONTH([AsOfDate_DT]) THEN 'This Month' ELSE 'Not This Month' END PERSISTED
     ,[Prior30Days] AS CASE WHEN [Date_DT] < [AsOfDate_DT] AND [DATE_DT] >= DATEADD(DAY, -30,[AsOfDate_DT]) THEN 'Prior 30 Days' ELSE 'Not Prior 30 Days' END PERSISTED
     ,[PriorMonth] AS CASE WHEN EOMONTH([Date_DT]) = EOMONTH(DATEADD(MONTH,-1,[AsOfDate_DT])) THEN 'Prior Month' ELSE 'Not Prior Month' END PERSISTED
