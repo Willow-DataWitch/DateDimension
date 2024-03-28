@@ -13,13 +13,14 @@ Because I made it just the way I like it.
 I wrote it for SQL Server 2019. It probably works for many versions of SQL Server, but I doubt the date functions are the same on other dialects of SQL. That said, you could probably adapt it pretty quickly. You could even send me pull request with your fancy postgres version.
 
 ## What's it do?
-- Makes a schema: [datedim]
-- Makes a table: [datedim].[datedim]
-- Makes a config table: [datedim].[config]
-- Makes a config stored procedure: [datedim].[config_usp]
-- Makes a table maintenance stored procedure: [datedim].[datedim_maintenance_usp]
-- Makes a shortcut stored procedure: [datedim].[AsOfDateIs_usp]
-- Makes a scalar function to convert dates to SK Integers: [datedim].[DateToDateSK_ufn]
+- Creates a schema: [datedim]
+- Creates a table: [datedim].[datedim]
+- Creates a config table: [datedim].[config]
+- Creates a config stored procedure: [datedim].[config_usp]
+- Creates a table maintenance stored procedure: [datedim].[datedim_maintenance_usp]
+- Creates a table maintenance stored procedure for the unknown member: [datedim].[datedim_maintenance_unknownMember_usp]
+- Creates a shortcut stored procedure: [datedim].[AsOfDateIs_usp]
+- Creates a scalar function to convert dates to SK Integers: [datedim].[DateToDateSK_ufn]
 
 ## How do I join to it?
 Convert your dates with [datedim].[DateToDateSK_ufn] and join on [SK_Date]. It has a yyyyMMdd formatted integer for the SK. This is one of only a tiny handful of cases when I endorse smart-keys for your surrogate keys.
