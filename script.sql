@@ -142,8 +142,8 @@ AS
 IF (SELECT COUNT(1) FROM [datedim].[datedim] ) = 0
 BEGIN /*Begin If table is null, repopulate*/
 EXEC [datedim].[datedim_maintenance_unknownMember_usp];
-DECLARE @TheDate DATE = (SELECT MAX(StartDate) FROM [datedim].[config]);
-DECLARE @EndDate DATE = (SELECT MIN(StartDate) FROM [datedim].[config]);
+DECLARE @TheDate DATE = (SELECT MAX([StartDate]) FROM [datedim].[config]);
+DECLARE @EndDate DATE = (SELECT MAX([EndDate]) FROM [datedim].[config]);
 
 WHILE (@TheDate <= @EndDate)
 BEGIN /*Begin While looping dates*/
