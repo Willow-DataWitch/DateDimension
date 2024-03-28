@@ -4,4 +4,4 @@ param (
     ,[Parameter(Mandatory= $true)]$Database
 )
 Import-Module dbatools;
-Invoke-DbaQuery -SQLInstance $SQLInstance -Database $Database -Query $PSScriptRoot\script.sql;
+Invoke-DbaQuery -SQLInstance $SQLInstance -Database $Database -File $PSScriptRoot\script.sql;

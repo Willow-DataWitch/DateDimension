@@ -6,7 +6,7 @@ param (
     ,[Parameter(Mandatory= $false)][DateTime]$StartDate
     ,[Parameter(Mandatory= $false)][DateTime]$EndDate
     ,[Parameter(Mandatory= $false)][Int]$FiscalDateOffsetInMonths
-    ,[Parameter(Mandatory= $false)][Bit]$ForceRebuild
+    ,[Parameter(Mandatory= $false)][Boolean]$ForceRebuild
 )
 Import-Module dbatools;
 $Query = @"
@@ -15,7 +15,7 @@ EXEC [datedim].[config_usp]
     ,@StartDate = $( if ($StartDate -like $null) {"NULL"} else {"'" + $StartDate + "'"} )
     ,@EndDate = $( if ($EndDate -like $null) {"NULL"} else {"'" + $EndDate + "'"} )
     ,@FiscalDateOffsetInMonths = $( if ($FiscalDateOffsetInMonths -like $null) {"NULL"} else {"'" + $FiscalDateOffsetInMonths + "'"} )
-    ,@ForceRebuild = $( if ($FiscalDateOffsetInMonths -like $null) {"0"} else {"'" + $ForceRebuild + "'"} )
+    ,@ForceRebuild = $( if ($ForceRebuild -like $null) {"0"} else {"'" + [Int]$ForceRebuild + "'"} )
 ;
 "@
 Invoke-DbaQuery -SQLInstance $SQLInstance -Database $Database -Query $Query;

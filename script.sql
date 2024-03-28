@@ -71,9 +71,13 @@ CREATE TABLE [datedim].[datedim] (
 )
 GO
 CREATE PROCEDURE [datedim].[datedim_maintenance_unknownMember_usp] AS
-IF (SELECT COUNT(1) FROM [datedim].[datedim] WHERE [SK_Date] = -1) IS NULL
+IF (SELECT COUNT(1) FROM [datedim].[datedim] WHERE [SK_Date] = -1) = 0
 BEGIN
 INSERT INTO [datedim].[datedim]
+(
+    [SK_Date]
+    ,[Date_DT]
+)
 SELECT
      -1 AS [SK_Date]
     ,NULL AS [Date_DT]
@@ -116,7 +120,11 @@ SET
 ,[FiscalDateOffsetInMonths] = COALESCE(@FiscalDateOffsetInMonths, [a].[FiscalDateOffsetInMonths])
 FROM [datedim].[config] AS [a];
 
-IF (SELECT MAX([Date_DT]) FROM [datedim].[datedim] ) <> @EndDate OR (SELECT MIN([Date_DT]) FROM [datedim].[datedim] ) <> @StartDate OR @ForceRebuild = 1
+IF (SELECT MAX([Date_DT]) FROM [datedim].[datedim] ) <> @EndDate
+    OR (SELECT MAX([Date_DT]) FROM [datedim].[datedim] ) IS NULL
+    OR (SELECT MIN([Date_DT]) FROM [datedim].[datedim] ) <> @StartDate
+    OR (SELECT MIN([Date_DT]) FROM [datedim].[datedim] ) IS NULL
+    OR @ForceRebuild = 1
 BEGIN
 DELETE [datedim].[datedim];
 EXEC [datedim].[datedim_maintenance_usp];
@@ -131,7 +139,7 @@ GO
 
 CREATE PROCEDURE [datedim].[datedim_maintenance_usp]
 AS
-IF (SELECT COUNT(1) FROM [datedim].[datedim] ) IS NULL
+IF (SELECT COUNT(1) FROM [datedim].[datedim] ) = 0
 BEGIN /*Begin If table is null, repopulate*/
 EXEC [datedim].[datedim_maintenance_unknownMember_usp];
 DECLARE @TheDate DATE = (SELECT MAX(StartDate) FROM [datedim].[config]);
@@ -145,6 +153,9 @@ BEGIN /*Begin While looping dates*/
     SELECT 
     [datedim].[DateToDateSK_ufn](@TheDate)
     , @TheDate;
+
+    /*Increment*/
+    SET @TheDate = DATEADD(DAY,1,@TheDate);
 END /*End While looping dates*/
 END /*End If table is null, repopulate*/
 
